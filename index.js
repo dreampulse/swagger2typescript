@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * Creates a typescript definition file based on a swagger (v2.0) definition
  *

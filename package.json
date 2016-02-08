@@ -1,6 +1,6 @@
 {
   "name": "swagger2typescript",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Creates typescript definitions (.d.ts) based on a swagger definition-file",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,13 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:dreampulse/swagger2typescript.git"
+  },
+  "keywords": [
+    "swagger",
+    "typescript"
+  ],
+  "bin": {
+    "swagger2typescript": "./dist.js"
   },
   "devDependencies": {
     "babel-core": "^6.5.1",

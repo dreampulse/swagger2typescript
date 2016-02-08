@@ -15,19 +15,14 @@ exports.default = createTypescriptDefinitions;
  */
 function createTypescriptDefinitions(root) {
 
-  var deref = function deref(obj) {
-    var selectors = obj['$ref'].split('/');
-    selectors.shift();
-
-    return selectors.reduce(function (last, cur) {
-      return last[cur];
-    }, root);
+  var referenceDef = function referenceDef(obj) {
+    return obj['$ref'].split('/')[2];
   };
 
   var objectDef = function objectDef(object) {
     return '{\n' + Object.keys(object.properties).map(function (propertyName) {
       var property = object.properties[propertyName];
-      return propertyName + ' : ' + typeDefiniton(property);
+      return propertyName + ' : ' + typeDefiniton(property) + ';';
     }).join('\n') + '\n}';
   };
 
@@ -36,22 +31,22 @@ function createTypescriptDefinitions(root) {
   };
 
   var typeDefiniton = function typeDefiniton(obj) {
-    if (obj['$ref']) return typeDefiniton(deref(obj));
+    if (obj['$ref']) return referenceDef(obj);
     if (obj.schema) return typeDefiniton(obj.schema);
 
     switch (obj.type) {
       case 'object':
         return objectDef(obj);
       case 'string':
-        return 'string;';
+        return 'string';
       case 'number':
-        return 'number;';
+        return 'number';
       case 'boolean':
-        return 'boolean;';
+        return 'boolean';
       case 'file':
-        return 'File;';
+        return 'File';
       case 'array':
-        return arrayDef(obj) + '[];';
+        return arrayDef(obj) + '[]';
       default:
         throw new Error('type ' + obj.type + ' not expected, ' + JSON.stringify(obj, null, ' '));
     }
@@ -68,7 +63,7 @@ function createTypescriptDefinitions(root) {
       default:
         throw new Error('type ' + obj.type + ' not supported in interface');
     }
-  }).join('\n');
+  }).join('\n\n');
 
   var parameterDefinition = function parameterDefinition(obj) {
     return obj.name + ' : ' + typeDefiniton(obj);
@@ -83,12 +78,12 @@ function createTypescriptDefinitions(root) {
       operationId = operationId.charAt(0).toUpperCase() + operationId.slice(1);
 
       var definition = method.parameters.map(function (param) {
-        return parameterDefinition(param);
+        return parameterDefinition(param) + ';';
       }).join('\n');
 
-      return 'export interface ' + operationId + 'Parameters {\n' + definition + '}';
-    }).join('\n');
-  }).join('\n');
+      return '// ' + method.summary + '\nexport interface ' + operationId + 'Parameters {\n' + definition + '}';
+    }).join('\n\n');
+  }).join('\n\n');
 
   return [modelDefinitions, pathDefinitons].join('\n');
 }

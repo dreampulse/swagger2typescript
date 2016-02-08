@@ -8,17 +8,14 @@
  */
 export default function createTypescriptDefinitions(root) {
 
-  const deref = obj => {
-    let selectors = obj['$ref'].split('/');
-    selectors.shift();
-
-    return selectors.reduce((last, cur) => last[cur], root);
+  const referenceDef = obj => {
+    return obj['$ref'].split('/')[2];
   };
 
   const objectDef = object => {
     return '{\n' + Object.keys(object.properties).map(propertyName => {
         const property = object.properties[propertyName];
-        return `${propertyName} : ${typeDefiniton(property)}`;
+        return `${propertyName} : ${typeDefiniton(property)};`;
       }).join('\n') + '\n}';
   };
 
@@ -27,22 +24,22 @@ export default function createTypescriptDefinitions(root) {
   };
 
   const typeDefiniton = obj => {
-    if (obj['$ref']) return typeDefiniton(deref(obj));
+    if (obj['$ref']) return referenceDef(obj);
     if (obj.schema) return typeDefiniton(obj.schema);
 
     switch (obj.type) {
       case 'object':
         return objectDef(obj);
       case 'string':
-        return `string;`;
+        return `string`;
       case 'number':
-        return `number;`;
+        return `number`;
       case 'boolean':
-        return `boolean;`;
+        return `boolean`;
       case 'file':
-        return `File;`;
+        return `File`;
       case 'array':
-        return arrayDef(obj) + '[];';
+        return arrayDef(obj) + '[]';
       default:
         throw new Error(`type ${obj.type} not expected, ${JSON.stringify(obj, null, ' ')}`)
     }
@@ -58,7 +55,7 @@ export default function createTypescriptDefinitions(root) {
       default: throw new Error(`type ${obj.type} not supported in interface`);
     }
 
-  }).join('\n');
+  }).join('\n\n');
 
   const parameterDefinition = obj => {
     return obj.name + ' : ' + typeDefiniton(obj)
@@ -73,11 +70,11 @@ export default function createTypescriptDefinitions(root) {
         let operationId = method.operationId;
         operationId = operationId.charAt(0).toUpperCase() + operationId.slice(1);
 
-        const definition = method.parameters.map(param => parameterDefinition(param)).join('\n');
+        const definition = method.parameters.map(param => parameterDefinition(param)+';').join('\n');
 
-        return `export interface ${operationId}Parameters {\n${definition}}`;
-      }).join('\n');
-    }).join('\n');
+        return `// ${method.summary}\nexport interface ${operationId}Parameters {\n${definition}}`;
+      }).join('\n\n');
+    }).join('\n\n');
 
 
   return [modelDefinitions, pathDefinitons].join('\n');

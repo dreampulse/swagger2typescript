@@ -1,10 +1,11 @@
 {
   "name": "swagger2typescript",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Creates typescript definitions (.d.ts) based on a swagger definition-file",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "babel index.js > dist.js"
   },
   "author": "Jonathan Häberle <jonathan.haeberle@gmail.com> (http://dreampulse.de/)",
   "license": "MIT",

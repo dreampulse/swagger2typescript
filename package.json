@@ -1,0 +1,17 @@
+{
+  "name": "swagger2typescript",
+  "version": "1.0.0",
+  "description": "Creates typescript definitions (.d.ts) based on a swagger definition-file",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jonathan Häberle <jonathan.haeberle@gmail.com> (http://dreampulse.de/)",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.5.1",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0"
+  }
+}

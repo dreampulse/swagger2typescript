@@ -90,7 +90,7 @@ if (require.main === module) {
     let swagger = require(process.argv[2]);
     console.log(createTypescriptDefinitions(swagger));
   }
-  
+
 }
 
 

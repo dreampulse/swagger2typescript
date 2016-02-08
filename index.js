@@ -1,6 +1,10 @@
-
-
-function createTypescriptDefinitions(root) {
+/**
+ * Creates a typescript definition file based on a swagger (v2.0) definition
+ *
+ * @param root
+ * @returns {string}
+ */
+export default function createTypescriptDefinitions(root) {
 
   const deref = obj => {
     let selectors = obj['$ref'].split('/');
@@ -77,6 +81,16 @@ function createTypescriptDefinitions(root) {
   return [modelDefinitions, pathDefinitons].join('\n');
 }
 
+// started with `$ node <FILENAME>`
+if (require.main === module) {
 
-let swagger = require('./fixtures/all3dp-print-service.json');
-console.log(createTypescriptDefinitions(swagger));
+  if (process.argv.length < 3) {
+    console.error(`Error Usage: ${process.argv[1]} ./swagger-file.json`);
+  } else {
+    let swagger = require(process.argv[2]);
+    console.log(createTypescriptDefinitions(swagger));
+  }
+  
+}
+
+
